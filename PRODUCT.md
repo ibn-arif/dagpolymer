@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static HTML/CSS/JS, no build step, hosted on GitHub Pages (repo ibn-arif/dagpolymer). Chosen by the user.
+Static HTML/CSS/JS hosted on GitHub Pages (repo ibn-arif/dagpolymer). Chosen by the user. Six pages mirroring dagpolymer.com (home, products, production, ecology, about, contacts); shared header/footer assembled by `node build.mjs` from `src/*.html` — edit sources, then rebuild and commit the output.
 
 ## Users
 
@@ -24,7 +24,7 @@ Own full cycle on one site in Kaspiysk: raw material → blown-film extrusion �
 
 ## Capabilities and Constraints
 
-- Three products: stretch film (17, 20, 23 µm; 500 mm; 0.5–35 kg rolls; up to 300% stretch), shrink film (20–200 µm; up to 1500 mm; 140–180 °C; up to 70% shrink), greenhouse film (40–200 µm; up to 6 m; up to 5 years; 90–92% light transmission).
+- Products (full list on /products/): stretch, shrink, greenhouse and mulch film, recycled granules (ПЭНД, ПЭВД, ПП), custom packaging. Core three: stretch film (17, 20, 23 µm; 500 mm; 0.5–35 kg rolls; up to 300% stretch), shrink film (20–200 µm; up to 1500 mm; 140–180 °C; up to 70% shrink), greenhouse film (40–200 µm; up to 6 m; up to 5 years; 90–92% light transmission).
 - Delivery regions named by the client: Dagestan, Chechnya, Stavropol, Krasnodar, Rostov, Volgograd, Astrakhan, Kalmykia; other regions on request.
 - No server: the request form composes an email to dagpolymer@mail.ru (user decision).
 - Language switcher (RU/EN/中文/فارسی/العربية) exists in the Figma design but no translations exist; not built.
@@ -36,6 +36,8 @@ Own full cycle on one site in Kaspiysk: raw material → blown-film extrusion �
 - Typeface Onest (used on the incumbent site).
 
 ## Evidence on Hand
+
+- Page content for inner pages is taken from the live dagpolymer.com (2026-10-31): production stages, equipment, quality control and ГОСТ certificates, ecology goals, values, payment and delivery terms, 24/7 production, orders from 3 working days.
 
 - Photos from Figma page «Фото (сгенерированы)» — AI-generated, illustrative: greenhouse, extrusion, stretch pallet, shrink-wrapped bottles, granules, rolls, factory (img/*.jpg).
 - Figures supplied in the client design: 3 000+ t recycled per year, 100% of defects recycled, −40% CO₂. Not independently verified.

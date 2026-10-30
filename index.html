@@ -3,40 +3,40 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ДагПолимер — плёнка из Каспийска</title>
+<title>ДагПолимер · плёнка из Каспийска</title>
 <meta name="description" content="Стрейч, термоусадочная и тепличная плёнка от 17 до 200 микрон. Завод в Каспийске с 2017 года, доставка по югу России.">
 <meta name="theme-color" content="#2d6a3e">
-<link rel="icon" href="img/mark.svg" type="image/svg+xml">
+<link rel="icon" href="./img/mark.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="./style.css">
 <script>document.documentElement.classList.add('js')</script>
 </head>
-<body>
+<body class="page-home">
 <a class="skip" href="#main">К содержанию</a>
 
 <header class="nav">
   <div class="wrap nav__in">
-    <a class="brand" href="#top" aria-label="ДагПолимер, на главную">
-      <img src="img/mark.svg" alt="" width="46" height="25">
+    <a class="brand" href="./" aria-label="ДагПолимер, на главную">
+      <img src="./img/mark.svg" alt="" width="46" height="25">
       <span>ДагПолимер</span>
     </a>
-    <nav aria-label="Разделы">
+    <nav class="nav__menu" id="menu" aria-label="Разделы">
       <ul class="nav__links">
-        <li><a href="#products">Продукция</a></li>
-        <li><a href="#process">Производство</a></li>
-        <li><a href="#ecology">Экология</a></li>
-        <li><a href="#delivery">Доставка</a></li>
-        <li><a href="#contact">Контакты</a></li>
+          <li><a href="./products/">Продукция</a></li>
+          <li><a href="./production/">Производство</a></li>
+          <li><a href="./ecology/">Экология</a></li>
+          <li><a href="./about/">О компании</a></li>
+          <li><a href="./contacts/">Контакты</a></li>
       </ul>
     </nav>
-    <a class="btn btn--small" href="#contact">Заявка</a>
+    <a class="btn btn--small nav__cta" href="./contacts/#quote">Заявка</a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu" aria-label="Меню"><span class="nav__bars" aria-hidden="true"></span><span class="nav__label">Меню</span></button>
   </div>
 </header>
 
 <main id="main">
-
 <section class="hero" id="top">
   <div class="wrap hero__in">
     <div class="hero__copy">
@@ -49,10 +49,10 @@
     </div>
     <div class="hero__media">
       <figure class="disc disc--xl hero__main">
-        <img src="img/greenhouse.jpg" alt="Ряды теплиц под плёнкой у подножия гор" width="1100" height="886" fetchpriority="high">
+        <img src="./img/greenhouse.jpg" alt="Ряды теплиц под плёнкой у подножия гор" width="1100" height="886" fetchpriority="high">
       </figure>
       <figure class="disc disc--s hero__small">
-        <img src="img/extrusion.jpg" alt="Линия раздувной экструзии в цехе" width="1100" height="1366" loading="lazy">
+        <img src="./img/extrusion.jpg" alt="Линия раздувной экструзии в цехе" width="1100" height="1366" loading="lazy">
       </figure>
       <p class="hero__stat"><strong>90–92%</strong> света пропускает наша тепличная плёнка</p>
     </div>
@@ -74,7 +74,7 @@
       </div>
 
       <article class="film" role="tabpanel" id="p-stretch" aria-labelledby="tab-stretch" data-film="Стрейч-плёнка">
-        <figure class="disc disc--l film__pic"><img src="img/stretch.jpg" alt="Паллета с коробками, обмотанная стрейч-плёнкой" width="1100" height="886" loading="lazy"></figure>
+        <figure class="disc disc--l film__pic"><img src="./img/stretch.jpg" alt="Паллета с коробками, обмотанная стрейч-плёнкой" width="1100" height="886" loading="lazy"></figure>
         <div class="film__body">
           <h3>Стрейч-плёнка</h3>
           <p>Для ручной и машинной обмотки паллет. Держит груз в дороге и не рвётся на углах коробок.</p>
@@ -84,12 +84,12 @@
             <div><dt>Вес рулона</dt><dd>0,5–35 кг</dd></div>
             <div><dt>Растяжение</dt><dd>до 300%</dd></div>
           </dl>
-          <a class="btn" href="#contact" data-pick>Рассчитать стрейч</a>
+          <div class="film__actions"><a class="btn" href="#contact" data-pick>Рассчитать стрейч</a><a class="more" href="./products/#stretch">Все характеристики</a></div>
         </div>
       </article>
 
       <article class="film" role="tabpanel" id="p-shrink" aria-labelledby="tab-shrink" data-film="Термоусадочная плёнка" hidden>
-        <figure class="disc disc--l film__pic"><img src="img/shrink.jpg" alt="Бутылки воды в термоусадочной плёнке на конвейере" width="1100" height="886" loading="lazy"></figure>
+        <figure class="disc disc--l film__pic"><img src="./img/shrink.jpg" alt="Бутылки воды в термоусадочной плёнке на конвейере" width="1100" height="886" loading="lazy"></figure>
         <div class="film__body">
           <h3>Термоусадочная плёнка</h3>
           <p>Для групповой упаковки: бутылки, банки, стройматериалы. Плотно садится в термотоннеле и держит форму.</p>
@@ -99,12 +99,12 @@
             <div><dt>Температура усадки</dt><dd>140–180 °C</dd></div>
             <div><dt>Усадка</dt><dd>до 70%</dd></div>
           </dl>
-          <a class="btn" href="#contact" data-pick>Рассчитать термоусадку</a>
+          <div class="film__actions"><a class="btn" href="#contact" data-pick>Рассчитать термоусадку</a><a class="more" href="./products/#shrink">Все характеристики</a></div>
         </div>
       </article>
 
       <article class="film" role="tabpanel" id="p-green" aria-labelledby="tab-green" data-film="Тепличная плёнка" hidden>
-        <figure class="disc disc--l film__pic"><img src="img/greenhouse.jpg" alt="Тепличный комплекс под плёнкой" width="1100" height="886" loading="lazy"></figure>
+        <figure class="disc disc--l film__pic"><img src="./img/greenhouse.jpg" alt="Тепличный комплекс под плёнкой" width="1100" height="886" loading="lazy"></figure>
         <div class="film__body">
           <h3>Тепличная плёнка</h3>
           <p>Для теплиц и укрытий. Пропускает свет, держит тепло и служит несколько сезонов.</p>
@@ -114,7 +114,7 @@
             <div><dt>Срок службы</dt><dd>до 5 лет</dd></div>
             <div><dt>Светопропускание</dt><dd>90–92%</dd></div>
           </dl>
-          <a class="btn" href="#contact" data-pick>Рассчитать тепличную</a>
+          <div class="film__actions"><a class="btn" href="#contact" data-pick>Рассчитать тепличную</a><a class="more" href="./products/#greenhouse">Все характеристики</a></div>
         </div>
       </article>
     </div>
@@ -129,8 +129,8 @@
         <p data-rise>Шесть этапов на одной площадке в Каспийске. Ничего не отдаём на сторону, поэтому отвечаем за каждый метр.</p>
       </div>
       <div class="process__pics" data-rise>
-        <figure class="disc disc--m"><img src="img/extrusion.jpg" alt="Башня экструдера: расплав раздувается в рукав" width="1100" height="1366" loading="lazy"></figure>
-        <figure class="disc disc--m"><img src="img/rolls.jpg" alt="Готовые рулоны плёнки после намотки" width="1100" height="886" loading="lazy"></figure>
+        <figure class="disc disc--m"><img src="./img/extrusion.jpg" alt="Башня экструдера: расплав раздувается в рукав" width="1100" height="1366" loading="lazy"></figure>
+        <figure class="disc disc--m"><img src="./img/rolls.jpg" alt="Готовые рулоны плёнки после намотки" width="1100" height="886" loading="lazy"></figure>
       </div>
     </div>
 
@@ -142,12 +142,13 @@
       <li><h3>Упаковка</h3><p>Маркируем рулоны и собираем паллеты.</p></li>
       <li><h3>Отгрузка</h3><p>Везём своим транспортом или через транспортные компании.</p></li>
     </ol>
+    <p class="section-link"><a class="more more--light" href="./production/">Как устроено производство</a></p>
   </div>
 </section>
 
 <section class="eco" id="ecology" aria-labelledby="eco-h">
   <div class="wrap eco__in">
-    <figure class="disc disc--xl eco__pic" data-rise><img src="img/granules.jpg" alt="Вторичные гранулы полиэтилена в ладони" width="1100" height="1100" loading="lazy"></figure>
+    <figure class="disc disc--xl eco__pic" data-rise><img src="./img/granules.jpg" alt="Вторичные гранулы полиэтилена в ладони" width="1100" height="1100" loading="lazy"></figure>
     <div class="eco__copy">
       <h2 id="eco-h" data-rise>Плёнка, которая возвращается</h2>
       <p data-rise>Обрезки и брак не уходят на свалку. Мы перерабатываем их в гранулы и снова пускаем в производство.</p>
@@ -156,6 +157,7 @@
         <div><dt>100%</dt><dd>брака перерабатываем</dd></div>
         <div><dt>−40%</dt><dd>выбросов CO₂</dd></div>
       </dl>
+      <p class="section-link" data-rise><a class="more" href="./ecology/">Как мы перерабатываем</a></p>
     </div>
   </div>
 </section>
@@ -175,8 +177,9 @@
         <li>Астраханская область</li>
         <li>Калмыкия</li>
       </ul>
+      <p class="section-link" data-rise><a class="more" href="./about/">О заводе и географии поставок</a></p>
     </div>
-    <figure class="delivery__pic" data-rise><img src="img/factory.jpg" alt="Здание завода ДагПолимер в Каспийске" width="1400" height="772" loading="lazy"></figure>
+    <figure class="delivery__pic" data-rise><img src="./img/factory.jpg" alt="Здание завода ДагПолимер в Каспийске" width="1400" height="772" loading="lazy"></figure>
   </div>
 </section>
 
@@ -210,7 +213,6 @@
     </div>
   </div>
 </section>
-
 </main>
 
 <footer class="foot">
@@ -218,22 +220,22 @@
     <div class="foot__cols">
       <div>
         <h2 class="foot__h">Продукция</h2>
-        <ul><li><a href="#products">Стрейч-плёнка</a></li><li><a href="#products">Термоусадочная</a></li><li><a href="#products">Тепличная</a></li></ul>
+        <ul><li><a href="./products/#stretch">Стрейч-плёнка</a></li><li><a href="./products/#shrink">Термоусадочная</a></li><li><a href="./products/#greenhouse">Тепличная и мульча</a></li><li><a href="./products/#more">Гранулы и упаковка</a></li></ul>
       </div>
       <div>
         <h2 class="foot__h">Компания</h2>
-        <ul><li><a href="#process">Производство</a></li><li><a href="#ecology">Экология</a></li><li><a href="#delivery">Доставка</a></li></ul>
+        <ul><li><a href="./production/">Производство</a></li><li><a href="./ecology/">Экология</a></li><li><a href="./about/">О компании</a></li><li><a href="./contacts/">Контакты</a></li></ul>
       </div>
       <div>
         <h2 class="foot__h">Контакты</h2>
         <address>Республика Дагестан, г.&nbsp;Каспийск,<br>Производственная улица, 5<br><a href="tel:+79883090202">+7 (988) 309-02-02</a><br><a href="mailto:dagpolymer@mail.ru">dagpolymer@mail.ru</a></address>
       </div>
     </div>
-    <p class="foot__name" aria-hidden="true"><img src="img/mark-dark.svg" alt="" width="153" height="84"><span>ДагПолимер</span></p>
+    <p class="foot__name" aria-hidden="true"><img src="./img/mark-dark.svg" alt="" width="153" height="84"><span>ДагПолимер</span></p>
     <p class="foot__legal">© 2026 ДагПолимер. Плёнка из Каспийска с 2017 года.</p>
   </div>
 </footer>
 
-<script src="app.js" defer></script>
+<script src="./app.js" defer></script>
 </body>
 </html>

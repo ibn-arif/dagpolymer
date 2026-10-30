@@ -16,3 +16,8 @@ Sage field, white panels, one deep green. Round photographs (discs) are the moti
 - No shadows, gradients, eyebrows or thin rules; surfaces separate by tone.
 - One action per screen: «Получить расчёт».
 - Motion: ease-out cubic-bezier(0.23,1,0.32,1); entrances rise 24px with 80ms stagger once; hero discs open with clip-path; chain bond grows with scroll. Everything has a prefers-reduced-motion path; content is visible without JS.
+
+## Pages
+- Inner pages open with `.intro` (big h1, lead, one disc photo) and close with the green `.cta` band.
+- Reused blocks: `.process` + `.chain` (set `--n` for step count), `.panel` (white field), `.specs` (value over label), `.ticks`, `.regions`, `.contact__card` form.
+- Mobile header: brand, «Заявка», menu button; menu drops as a white panel.
