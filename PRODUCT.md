@@ -39,6 +39,7 @@ Own full cycle on one site in Kaspiysk: raw material → blown-film extrusion �
 
 - Page content for inner pages is taken from the live dagpolymer.com (2026-10-31): production stages, equipment, quality control and ГОСТ certificates, ecology goals, values, payment and delivery terms, 24/7 production, orders from 3 working days.
 
+- Product and production-stage photos (img/found/) are openly licensed pictures from Wikimedia Commons of the same kind of equipment and products, not the client's plant; credits in img/found/credits.json and on /credits/. Replace with own photos when available.
 - Photos from Figma page «Фото (сгенерированы)» — AI-generated, illustrative: greenhouse, extrusion, stretch pallet, shrink-wrapped bottles, granules, rolls, factory (img/*.jpg).
 - Figures supplied in the client design: 3 000+ t recycled per year, 100% of defects recycled, −40% CO₂. Not independently verified.
 - Contacts: +7 (988) 309-02-02, dagpolymer@mail.ru, Mon–Fri 9:00–18:00, Республика Дагестан, г. Каспийск, Производственная улица, 5.
