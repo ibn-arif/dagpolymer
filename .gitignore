@@ -4,3 +4,6 @@ img/raw/
 GATES.md
 .impeccable/
 .DS_Store
+.agents/
+.claude/
+skills-lock.json
