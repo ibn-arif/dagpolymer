@@ -1,31 +1,12 @@
 // Builds the static pages: shared header/footer + one body per page. Run: node build.mjs
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
-// Photo credits page, generated from the licence records saved next to the found photos.
-const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-const credits = JSON.parse(readFileSync('img/found/credits.json', 'utf8'));
-writeFileSync('src/credits.html', `<section class="intro intro--tight">
-  <div class="wrap">
-    <h1 class="intro__title" data-rise>Фотографии</h1>
-    <p class="intro__lead" data-rise>Часть снимков на сайте взята из открытых коллекций и используется по свободным лицензиям. Они показывают оборудование и продукцию такого же типа, а не наш завод.</p>
-  </div>
-</section>
-<section class="credits" aria-label="Список фотографий">
-  <div class="wrap">
-    <ul class="credits__list">
-${credits.map(c => `      <li data-rise><img src="{{r}}${esc(c.file)}" alt="" width="240" height="240" loading="lazy"><p><a href="${esc(c.page)}" rel="noopener">${esc(c.title)}</a><br>${esc(c.creator)} · <a href="${esc(c.licenseUrl)}" rel="noopener">${esc(c.license)}</a> · ${esc(c.via)}</p></li>`).join('\n')}
-    </ul>
-  </div>
-</section>`);
-
-
 const pages = [
   { key: 'home', out: 'index.html', title: 'ДагПолимер · плёнка из Каспийска', desc: 'Стрейч, термоусадочная и тепличная плёнка от 17 до 200 микрон. Завод в Каспийске с 2017 года, доставка по югу России.' },
   { key: 'products', out: 'products/index.html', title: 'Продукция · ДагПолимер', desc: 'Стрейч, термоусадочная, тепличная и мульчирующая плёнка, вторичные гранулы и упаковка под заказ. Характеристики и применение.' },
   { key: 'production', out: 'production/index.html', title: 'Производство · ДагПолимер', desc: 'Полный цикл на одной площадке в Каспийске: приёмка сырья, экструзия, контроль качества, намотка и отгрузка.' },
   { key: 'ecology', out: 'ecology/index.html', title: 'Экология · ДагПолимер', desc: 'Перерабатываем брак и вторсырьё в гранулы и снова пускаем в производство. 3 000+ тонн вторсырья в год.' },
   { key: 'about', out: 'about/index.html', title: 'О компании · ДагПолимер', desc: 'Завод полимерной плёнки в Каспийске с 2017 года. Работаем напрямую, без посредников, возим по всему югу России.' },
-  { key: 'credits', out: 'credits/index.html', title: 'Фотографии · ДагПолимер', desc: 'Авторы и лицензии фотографий из открытых коллекций, использованных на сайте.' },
   { key: 'contacts', out: 'contacts/index.html', title: 'Контакты · ДагПолимер', desc: 'Адрес завода в Каспийске, телефон отдела продаж, почта и заявка на расчёт стоимости плёнки.' },
 ];
 const nav = [
@@ -92,7 +73,7 @@ ${body.trim()}
       </div>
     </div>
     <p class="foot__name" aria-hidden="true"><img src="${r}img/mark-dark.svg" alt="" width="153" height="84"><span>ДагПолимер</span></p>
-    <p class="foot__legal">© 2026 ДагПолимер. Плёнка из Каспийска с 2017 года. <a href="${link('credits')}">Источники фото</a></p>
+    <p class="foot__legal">© 2026 ДагПолимер. Плёнка из Каспийска с 2017 года.</p>
   </div>
 </footer>
 
