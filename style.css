@@ -139,7 +139,7 @@ html { scrollbar-color: var(--green) var(--tint); }
 .specs { display: grid; grid-template-columns: repeat(4, auto); justify-content: start; gap: 20px 40px; margin: 32px 0 36px; }
 .specs div { display: flex; flex-direction: column-reverse; }
 .specs dt { font-size: var(--t-small); color: var(--ink-2); margin-top: 4px; }
-.specs dd { margin: 4px 0 0; font-size: var(--t-lead); font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.specs dd { white-space: nowrap; margin: 4px 0 0; font-size: var(--t-lead); font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .film.is-entering .film__pic img { animation: settle .5s var(--ease-out); }
 .film.is-entering .film__body { animation: fade-up .4s var(--ease-out); }
 @keyframes settle { from { transform: scale(1.08); opacity: .4; } }
@@ -226,6 +226,8 @@ html { scrollbar-color: var(--green) var(--tint); }
 .js .hero [data-rise] { transition-duration: .8s; }
 .js .hero__main, .js .hero__small { clip-path: circle(0% at 50% 50%); transition: clip-path 1.1s var(--ease-in-out); }
 .js .hero__small { transition-delay: .25s; }
+.js .intro__pic { clip-path: circle(0% at 50% 50%); transition: clip-path 1.1s var(--ease-in-out) .15s; }
+.js .intro.is-in .intro__pic { clip-path: circle(50% at 50% 50%); }
 .js .hero.is-in .hero__main, .js .hero.is-in .hero__small { clip-path: circle(50% at 50% 50%); }
 .js .hero__stat { opacity: 0; transform: translateY(16px); transition: opacity .6s var(--ease-out) .7s, transform .6s var(--ease-out) .7s; }
 .js .hero.is-in .hero__stat { opacity: 1; transform: none; }
@@ -266,6 +268,8 @@ html { scrollbar-color: var(--green) var(--tint); }
 .item__lead { margin-top: 20px; font-size: var(--t-lead); max-width: 30em; }
 .item .specs { grid-template-columns: repeat(2, auto); gap: 20px 56px; }
 .specs dd { font-size: var(--t-h3); }
+.film .specs { grid-template-columns: repeat(2, auto); gap: 20px 56px; }
+.film .specs dd { font-size: var(--t-h3); }
 .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 40px; margin-bottom: 36px; }
 .facts h3 { font-size: var(--t-body); letter-spacing: 0; line-height: 1.3; color: var(--green); margin-bottom: 6px; }
 .panel { background: var(--surface); border-radius: var(--r-card); padding: clamp(28px, 5vw, 80px); }
@@ -388,6 +392,7 @@ html { scrollbar-color: var(--green) var(--tint); }
   .extra { grid-template-columns: 1fr; }
   .contrib { grid-template-columns: 1fr; }
   .terms__in { grid-template-columns: 1fr 1fr; }
+  .contact__pics { display: none; }
   .terms__pic { grid-column: span 2; aspect-ratio: 16 / 9; }
   .team .disc { margin: 0 auto; }
   .story__pic { justify-self: center; max-width: 380px; }
@@ -411,7 +416,9 @@ html { scrollbar-color: var(--green) var(--tint); }
   .figures div { display: flex; align-items: baseline; gap: 16px; }
   .figures dd { margin: 0; }
   .specs { grid-template-columns: 1fr 1fr; }
-  .foot__cols { grid-template-columns: 1fr; }
+  .foot__cols { grid-template-columns: 1fr 1fr; gap: 40px 24px; }
+  .foot__cols > div:last-child { grid-column: span 2; }
+  .film .specs dd, .item .specs dd { font-size: var(--t-lead); }
   .process__pics .disc + .disc { margin-left: -24px; margin-top: 40px; }
   .nav__label { display: none; }
   .nav__in { gap: 12px; }
@@ -421,14 +428,15 @@ html { scrollbar-color: var(--green) var(--tint); }
   .equip__item--wide { grid-template-columns: 1fr; gap: 0; }
   .equip__pic { min-height: 280px; }
   .equip__text { padding: 24px; }
-  .extra__item { grid-template-columns: 96px 1fr; gap: 20px; }
+  .extra__item { grid-template-columns: 1fr; gap: 20px; }
+  .extra__item .disc { width: 140px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .hero__main img { animation: none; }
   .js [data-rise], .js .hero__stat { opacity: 1; transform: none; transition: none; }
-  .js .hero__main, .js .hero__small { clip-path: none; transition: none; }
+  .js .hero__main, .js .hero__small, .js .intro__pic { clip-path: none; transition: none; }
   .js .chain li::before { transform: none; opacity: 1; }
   .chain::before { transform: none !important; }
   .film.is-entering .film__pic img, .film.is-entering .film__body { animation: fade .2s ease; }

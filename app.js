@@ -2,8 +2,8 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = s => document.querySelector(s);
 
 // Entrances: stagger the parts of each section once it enters.
-const hero = $('.hero');
-if (hero) requestAnimationFrame(() => hero.classList.add('is-in'));
+const opening = $('.hero, .intro');
+if (opening) requestAnimationFrame(() => opening.classList.add('is-in'));
 document.querySelectorAll('section').forEach(s => s.querySelectorAll('[data-rise]').forEach((el, i) => el.style.setProperty('--i', i)));
 const io = new IntersectionObserver(entries => entries.forEach(e => {
   if (!e.isIntersecting) return;
