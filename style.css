@@ -149,8 +149,8 @@ html { scrollbar-color: var(--green) var(--tint); }
 .process { background: var(--green); color: var(--on-green); padding: var(--gap) 0; }
 .process__top { display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: center; margin-bottom: clamp(56px, 7vw, 96px); }
 .process__top p { margin-top: 24px; font-size: var(--t-lead); color: var(--on-green); max-width: 30em; }
-.process__pics { display: flex; }
-.process__pics .disc { width: clamp(140px, 17vw, 240px); outline: 8px solid var(--green); }
+.process__pics { display: flex; align-items: flex-start; }
+.process__pics .disc { flex: none; width: clamp(140px, 17vw, 240px); outline: 8px solid var(--green); }
 .process__pics .disc + .disc { margin-left: -36px; margin-top: 64px; }
 .chain { --atom: 44px; --n: 6; position: relative; display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 24px; counter-reset: step; }
 .chain::before {
