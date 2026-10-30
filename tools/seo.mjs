@@ -1,7 +1,7 @@
 // Checks search/AI signals on every built page and the root files. Pass --published for a PUBLISHED=1 build.
 import { readFileSync, existsSync } from 'node:fs';
 const published = process.argv.includes('--published');
-const pages = { 'index.html': '', 'products/index.html': 'products/', 'production/index.html': 'production/', 'ecology/index.html': 'ecology/', 'about/index.html': 'about/', 'contacts/index.html': 'contacts/' };
+const pages = { 'index.html': '', 'products/index.html': 'products/', 'production/index.html': 'production/', 'ecology/index.html': 'ecology/', 'about/index.html': 'about/', 'contacts/index.html': 'contacts/', 'products/stretch/index.html': 'products/stretch/', 'products/shrink/index.html': 'products/shrink/', 'products/greenhouse/index.html': 'products/greenhouse/' };
 const SITE = 'https://dagpolymer.com/';
 const errs = [];
 const need = (c, m) => c || errs.push(m);
@@ -14,7 +14,14 @@ for (const [file, path] of Object.entries(pages)) {
   const types = graph.flatMap(n => [].concat(n['@type']));
   need(types.includes('LocalBusiness') && types.includes('Organization'), `${file}: Organization + LocalBusiness`);
   need(types.includes(path ? 'BreadcrumbList' : 'WebSite'), `${file}: ${path ? 'BreadcrumbList' : 'WebSite'}`);
-  if (file.startsWith('products')) need(types.filter(t => t === 'Product').length === 3, `${file}: three Product nodes`);
+  if (file === 'products/index.html') need(types.filter(t => t === 'Product').length === 3, `${file}: three Product nodes`);
+  if (/products\/\w+\//.test(file)) {
+    need(types.includes('Product') && types.includes('FAQPage'), `${file}: Product + FAQPage`);
+    const bc = graph.find(n => n['@type'] === 'BreadcrumbList');
+    need(bc?.itemListElement.length === 3, `${file}: three-level breadcrumb`);
+    const faq = graph.find(n => n['@type'] === 'FAQPage');
+    need(faq && faq.mainEntity.every(q => h.includes(q.name)), `${file}: every FAQ question is visible on the page`);
+  }
   for (const k of ['og:title', 'og:description', 'og:image', 'og:url', 'twitter:card']) need(h.includes(`"${k}"`), `${file}: ${k}`);
   need(h.includes(`property="og:url" content="${SITE}${path}"`), `${file}: og:url points at ${SITE}${path}`);
   if (published) {
@@ -27,11 +34,11 @@ for (const [file, path] of Object.entries(pages)) {
   need(!/<h2 class="foot__h"/.test(h), `${file}: footer labels are not h2`);
 }
 const sm = readFileSync('sitemap.xml', 'utf8');
-need((sm.match(/<loc>/g) || []).length === 6 && Object.values(pages).every(p => sm.includes(`<loc>${SITE}${p}</loc>`)), 'sitemap lists all six URLs');
+need((sm.match(/<loc>/g) || []).length === 9 && Object.values(pages).every(p => sm.includes(`<loc>${SITE}${p}</loc>`)), 'sitemap lists all nine URLs');
 const rb = readFileSync('robots.txt', 'utf8');
 need(/User-agent: GPTBot/.test(rb) && /User-agent: ClaudeBot/.test(rb) && /User-agent: PerplexityBot/.test(rb) && !/Disallow: \/\s*$/m.test(rb) && rb.includes(`Sitemap: ${SITE}sitemap.xml`), 'robots allows AI crawlers and names the sitemap');
 need(existsSync('img/og.jpg'), 'og image exists');
 const ll = readFileSync('llms.txt', 'utf8');
-need(ll.startsWith('# ДагПолимер') && ll.includes('+7 (988) 309-02-02') && (ll.match(/\]\(https:\/\/dagpolymer\.com\//g) || []).length === 6, 'llms.txt has title, contacts and all pages');
+need(ll.startsWith('# ДагПолимер') && ll.includes('+7 (988) 309-02-02') && (ll.match(/\]\(https:\/\/dagpolymer\.com\//g) || []).length === 9, 'llms.txt has title, contacts and all pages');
 if (errs.length) { console.log(errs.join('\n')); process.exit(1); }
 console.log(`seo ok (${published ? 'production' : 'staging'})`);

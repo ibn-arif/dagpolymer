@@ -1,5 +1,6 @@
 // Builds the static pages: shared header/footer + one body per page. Run: node build.mjs
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { products } from './src/products-data.mjs';
 
 const pages = [
   { key: 'home', out: 'index.html', title: 'ДагПолимер · плёнка из Каспийска', desc: 'Стрейч, термоусадочная и тепличная плёнка от 17 до 200 микрон. Завод в Каспийске с 2017 года, доставка по югу России.' },
@@ -8,6 +9,7 @@ const pages = [
   { key: 'ecology', out: 'ecology/index.html', title: 'Экология · ДагПолимер', desc: 'Перерабатываем брак и вторсырьё в гранулы и снова пускаем в производство. 3 000+ тонн вторсырья в год.' },
   { key: 'about', out: 'about/index.html', title: 'О компании · ДагПолимер', desc: 'Завод полимерной плёнки в Каспийске с 2017 года. Работаем напрямую, без посредников, возим по всему югу России.' },
   { key: 'contacts', out: 'contacts/index.html', title: 'Контакты · ДагПолимер', desc: 'Адрес завода в Каспийске, телефон отдела продаж, почта и заявка на расчёт стоимости плёнки.' },
+  ...products.map(f => ({ key: 'product-' + f.id, out: `products/${f.id}/index.html`, title: f.title, desc: f.desc, section: 'products', product: f })),
 ];
 // Search and AI visibility. The site lives on github.io until it moves to its own domain:
 // a normal build is a staging copy (noindex, no canonical); PUBLISHED=1 node build.mjs makes the production build.
@@ -31,24 +33,20 @@ const org = {
   openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:00' },
   areaServed: ['Республика Дагестан', 'Чеченская Республика', 'Ставропольский край', 'Краснодарский край', 'Ростовская область', 'Волгоградская область', 'Астраханская область', 'Республика Калмыкия'].map(name => ({ '@type': 'AdministrativeArea', name })),
 };
-const film = (id, name, description, image, props) => ({
-  '@type': 'Product', '@id': SITE + 'products/#' + id, name, description, image: SITE + image, category: 'Полиэтиленовая плёнка',
+const productNode = f => ({
+  '@type': 'Product', '@id': `${SITE}products/${f.id}/#product`, name: f.name, description: f.lead, image: SITE + f.image,
+  url: `${SITE}products/${f.id}/`, category: 'Полиэтиленовая плёнка',
   brand: { '@id': SITE + '#org' }, manufacturer: { '@id': SITE + '#org' },
-  additionalProperty: props.map(([n, v]) => ({ '@type': 'PropertyValue', name: n, value: v })),
+  additionalProperty: f.specs.map(([name, value]) => ({ '@type': 'PropertyValue', name, value })),
 });
-const products = [
-  film('stretch', 'Стрейч-плёнка', 'Плёнка для ручной и машинной обмотки паллет и грузов.', 'img/stretch.jpg', [['Толщина', '17, 20, 23 мкм'], ['Ширина рулона', '500 мм'], ['Намотка', '0,5–35 кг'], ['Растяжение', 'до 300%']]),
-  film('shrink', 'Термоусадочная плёнка', 'Плёнка для групповой упаковки товаров в термотоннеле.', 'img/shrink.jpg', [['Толщина', '20–200 мкм'], ['Ширина рукава', 'до 1500 мм'], ['Температура усадки', '140–180 °C'], ['Усадка', 'до 70%']]),
-  film('greenhouse', 'Тепличная и мульчирующая плёнка', 'Плёнка для теплиц и мульчирования почвы.', 'img/greenhouse.jpg', [['Толщина', '40–200 мкм'], ['Ширина', 'до 6 м'], ['УФ-стабилизатор', 'до 5 лет'], ['Светопропускание', '90–92%']]),
-];
+const crumb = (position, name, item) => ({ '@type': 'ListItem', position, name, item });
 function jsonld(p) {
   const graph = [org];
   if (p.key === 'home') graph.push({ '@type': 'WebSite', '@id': SITE + '#site', name: 'ДагПолимер', url: SITE, inLanguage: 'ru', publisher: { '@id': SITE + '#org' } });
-  else graph.push({ '@type': 'BreadcrumbList', itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Главная', item: SITE },
-    { '@type': 'ListItem', position: 2, name: p.title.split(' · ')[0], item: url(p) },
-  ] });
-  if (p.key === 'products') graph.push(...products);
+  else if (p.product) graph.push({ '@type': 'BreadcrumbList', itemListElement: [crumb(1, 'Главная', SITE), crumb(2, 'Продукция', SITE + 'products/'), crumb(3, p.product.name, url(p))] });
+  else graph.push({ '@type': 'BreadcrumbList', itemListElement: [crumb(1, 'Главная', SITE), crumb(2, p.title.split(' · ')[0], url(p))] });
+  if (p.key === 'products') graph.push(...products.map(productNode));
+  if (p.product) graph.push(productNode(p.product), { '@type': 'FAQPage', mainEntity: p.product.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
 }
 
@@ -56,11 +54,87 @@ const nav = [
   ['products', 'Продукция'], ['production', 'Производство'], ['ecology', 'Экология'], ['about', 'О компании'], ['contacts', 'Контакты'],
 ];
 
+const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const productBody = f => `<section class="intro product">
+  <div class="wrap">
+    <h1 class="intro__title product__title" data-rise>${f.h1 || f.name}</h1>
+  </div>
+  <div class="wrap intro__in">
+    <div class="intro__copy">
+      <p class="intro__lead" data-rise>${f.lead}</p>
+      <dl class="specs product__specs" data-rise>
+        ${f.specs.map(([n, v]) => `<div><dt>${n}</dt><dd>${v}</dd></div>`).join('\n        ')}
+      </dl>
+      <div class="film__actions" data-rise><a class="btn" href="{{link:contacts}}?film=${f.id}#quote">${f.cta}</a><a class="more" href="{{link:products}}">Все виды плёнки</a></div>
+    </div>
+    <figure class="disc disc--l intro__pic"><img src="{{r}}${f.image}" alt="${f.alt}" width="${f.imageW}" height="${f.imageH}" fetchpriority="high"></figure>
+  </div>
+</section>
+
+<section class="uses" aria-labelledby="uses-h">
+  <div class="wrap">
+    <div class="panel uses__panel">
+      <div>
+        <h2 id="uses-h" data-rise>Где применяют</h2>
+        <ul class="ticks ticks--big" data-rise>${f.uses.map(u => `<li>${u}</li>`).join('')}</ul>
+      </div>
+      <div>
+        <h2 data-rise>Виды</h2>
+        <ul class="regions" data-rise>${f.kinds.map(k => `<li>${k}</li>`).join('')}</ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="guide" aria-labelledby="guide-h">
+  <div class="wrap guide__in">
+    <div class="guide__side">
+      <h2 id="guide-h" data-rise>Как выбрать</h2>
+      <p data-rise>Подскажем по телефону <a href="tel:+79883090202">+7&nbsp;(988)&nbsp;309-02-02</a> или в ответ на заявку.</p>
+    </div>
+    <div class="guide__body">
+      ${f.guide.map(([h, ps]) => `<div class="guide__part" data-rise><h3>${h}</h3>${ps.map(t => `<p>${esc(t)}</p>`).join('')}</div>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<section class="process made" aria-labelledby="made-h">
+  <div class="wrap made__in">
+    <div>
+      <h2 id="made-h" data-rise>Делаем сами в Каспийске</h2>
+      <p data-rise>${f.name} выпускается на нашем заводе: от приёмки сырья и экструзии до намотки и отгрузки. Ничего не отдаём на сторону.</p>
+      <p class="section-link" data-rise><a class="more more--light" href="{{link:production}}">Как устроено производство</a></p>
+    </div>
+    <div class="made__pics" data-rise>
+      <figure class="disc"><img src="{{r}}img/extrusion.jpg" alt="Линия экструзии плёнки в цехе" width="1100" height="1366" loading="lazy"></figure>
+      <figure class="disc"><img src="{{r}}img/rolls.jpg" alt="Готовые рулоны плёнки" width="1100" height="886" loading="lazy"></figure>
+      <figure class="disc"><img src="{{r}}img/factory.jpg" alt="Здание завода ДагПолимер в Каспийске" width="1400" height="772" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<section class="faq" aria-labelledby="faq-h">
+  <div class="wrap faq__in">
+    <h2 id="faq-h" data-rise>Частые вопросы</h2>
+    <div class="faq__list">
+      ${f.faq.map(([q, a]) => `<details class="faq__item" data-rise><summary>${q}</summary><p>${esc(a)}</p></details>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<section class="cta" aria-labelledby="cta-h">
+  <div class="wrap cta__in">
+    <h2 id="cta-h" data-rise>Посчитаем стоимость за час</h2>
+    <p data-rise>Напишите толщину, ширину и объём. Ответим с ценой и сроком доставки.</p>
+    <a class="btn btn--light" href="{{link:contacts}}?film=${f.id}#quote" data-rise>${f.cta}</a>
+  </div>
+</section>`;
+
 for (const p of pages) {
-  const r = p.out.includes('/') ? '../' : './';
+  const r = '../'.repeat(p.out.split('/').length - 1) || './';
   const link = k => (k === 'home' ? r : `${r}${k}/`);
-  const navItems = nav.map(([k, label]) => `<li><a href="${link(k)}"${k === p.key ? ' aria-current="page"' : ''}>${label}</a></li>`).join('\n          ');
-  const body = readFileSync(`src/${p.key}.html`, 'utf8').replaceAll('{{r}}', r).replace(/\{\{link:(\w+)\}\}/g, (_, k) => link(k));
+  const navItems = nav.map(([k, label]) => `<li><a href="${link(k)}"${k === (p.section || p.key) ? ' aria-current="page"' : ''}>${label}</a></li>`).join('\n          ');
+  const body = (p.product ? productBody(p.product) : readFileSync(`src/${p.key}.html`, 'utf8')).replaceAll('{{r}}', r).replace(/\{\{link:([\w/]+)\}\}/g, (_, k) => link(k));
   const html = `<!doctype html>
 <html lang="ru">
 <head>
@@ -116,7 +190,7 @@ ${body.trim()}
     <div class="foot__cols">
       <div>
         <p class="foot__h">Продукция</p>
-        <ul><li><a href="${link('products')}#stretch">Стрейч-плёнка</a></li><li><a href="${link('products')}#shrink">Термоусадочная</a></li><li><a href="${link('products')}#greenhouse">Тепличная и мульча</a></li><li><a href="${link('products')}#more">Гранулы и упаковка</a></li></ul>
+        <ul><li><a href="${link('products/stretch')}">Стрейч-плёнка</a></li><li><a href="${link('products/shrink')}">Термоусадочная</a></li><li><a href="${link('products/greenhouse')}">Тепличная и мульча</a></li><li><a href="${link('products')}#more">Гранулы и упаковка</a></li></ul>
       </div>
       <div>
         <p class="foot__h">Компания</p>
@@ -164,7 +238,7 @@ Allow: /
 
 Sitemap: ${SITE}sitemap.xml
 `);
-const specs = products.map(f => `- ${f.name}: ${f.additionalProperty.map(x => `${x.name.toLowerCase()} ${x.value}`).join(', ')}.`).join('\n');
+const specs = products.map(f => `- [${f.name}](${SITE}products/${f.id}/): ${f.specs.map(([n, v]) => `${n.toLowerCase()} ${v}`).join(', ')}.`).join('\n');
 writeFileSync('llms.txt', `# ДагПолимер
 
 > Завод полиэтиленовой плёнки в Каспийске, Республика Дагестан, работает с 2017 года. Выпускает стрейч, термоусадочную, тепличную и мульчирующую плёнку, перерабатывает брак и вторсырьё в гранулы. Продаёт оптом напрямую, без посредников, доставляет по югу России.
@@ -184,6 +258,6 @@ ${specs}
 
 ## Страницы
 
-${pages.map(p => `- [${p.title.split(' · ')[0] === 'ДагПолимер' ? 'Главная' : p.title.split(' · ')[0]}](${url(p)}): ${p.desc}`).join('\n')}
+${pages.filter(p => !p.product).map(p => `- [${p.title.split(' · ')[0] === 'ДагПолимер' ? 'Главная' : p.title.split(' · ')[0]}](${url(p)}): ${p.desc}`).join('\n')}
 `);
 console.log(`built ${pages.length} pages${PUBLISHED ? '' : ' (staging: noindex)'}, sitemap.xml, robots.txt, llms.txt`);

@@ -1,6 +1,6 @@
 // Checks every page on the live site answers 200 and carries the built header.
 const base = process.argv[2] || 'https://ibn-arif.github.io/dagpolymer/';
-const paths = ['', 'products/', 'production/', 'ecology/', 'about/', 'contacts/'];
+const paths = ['', 'products/', 'production/', 'ecology/', 'about/', 'contacts/', 'products/stretch/', 'products/shrink/', 'products/greenhouse/'];
 let bad = 0;
 for (const p of paths) {
   const r = await fetch(base + p + '?v=' + Date.now());
