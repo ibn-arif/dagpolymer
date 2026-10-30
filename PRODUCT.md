@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Static HTML/CSS/JS hosted on GitHub Pages (repo ibn-arif/dagpolymer). Chosen by the user. Six pages mirroring dagpolymer.com (home, products, production, ecology, about, contacts); shared header/footer assembled by `node build.mjs` from `src/*.html` — edit sources, then rebuild and commit the output.
+Static HTML/CSS/JS hosted on GitHub Pages (repo ibn-arif/dagpolymer). Chosen by the user. Six pages mirroring dagpolymer.com (home, products, production, ecology, about, contacts); shared header/footer assembled by `node build.mjs` from `src/*.html` — edit sources, then rebuild and commit the output. A normal build is a staging copy (noindex). When the site moves to dagpolymer.com: `PUBLISHED=1 node build.mjs` (adds canonical, removes noindex), then `node tools/seo.mjs --published`; serve robots.txt, sitemap.xml and llms.txt from the domain root.
 
 ## Users
 
