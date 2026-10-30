@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 153 84" fill="none">
+<defs>
+<linearGradient id="b" x1="0" y1="2.88" x2="0" y2="80.64" gradientUnits="userSpaceOnUse"><stop stop-color="#A9C8FF"/><stop offset="1" stop-color="#4F8DFD"/></linearGradient>
+<linearGradient id="g" x1="0" y1="2.88" x2="0" y2="80.64" gradientUnits="userSpaceOnUse"><stop stop-color="#C9EE5A"/><stop offset="1" stop-color="#3CC15E"/></linearGradient>
+</defs>
+<g stroke="url(#b)" stroke-width="10.08" stroke-linecap="round"><path d="M63.07 15.84h43.78M63.07 15.84l33.41 50.69M106.85 15.84l29.95 50.69"/></g>
+<g fill="url(#b)"><circle cx="63.07" cy="15.84" r="12.96"/><circle cx="106.85" cy="15.84" r="12.96"/><circle cx="96.48" cy="66.53" r="12.96"/><circle cx="136.8" cy="66.53" r="12.96"/></g>
+<g stroke="url(#g)" stroke-width="10.08" stroke-linecap="round"><path d="M45.79 15.84 15.84 67.68M45.79 15.84 79.2 66.53M15.84 67.68l63.36-1.15"/></g>
+<g fill="url(#g)"><circle cx="45.79" cy="15.84" r="12.96"/><circle cx="15.84" cy="67.68" r="12.96"/><circle cx="79.2" cy="66.53" r="12.96"/></g>
+</svg>
