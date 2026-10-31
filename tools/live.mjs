@@ -1,6 +1,7 @@
 // Checks every page on the live site answers 200 and carries the built header.
+import { products } from '../src/products-data.mjs';
 const base = process.argv[2] || 'https://ibn-arif.github.io/dagpolymer/';
-const paths = ['', 'products/', 'production/', 'ecology/', 'about/', 'contacts/', 'products/stretch/', 'products/shrink/', 'products/greenhouse/'];
+const paths = ['', 'products/', 'production/', 'ecology/', 'about/', 'contacts/', ...products.map(f => `products/${f.id}/`)];
 let bad = 0;
 for (const p of paths) {
   const r = await fetch(base + p + '?v=' + Date.now());

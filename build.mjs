@@ -35,7 +35,7 @@ const org = {
 };
 const productNode = f => ({
   '@type': 'Product', '@id': `${SITE}products/${f.id}/#product`, name: f.name, description: f.lead, image: SITE + f.image,
-  url: `${SITE}products/${f.id}/`, category: 'Полиэтиленовая плёнка',
+  url: `${SITE}products/${f.id}/`, category: f.category || 'Полиэтиленовая плёнка',
   brand: { '@id': SITE + '#org' }, manufacturer: { '@id': SITE + '#org' },
   additionalProperty: f.specs.map(([name, value]) => ({ '@type': 'PropertyValue', name, value })),
 });
@@ -55,6 +55,14 @@ const nav = [
 ];
 
 const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+// Three production photos for the "made here" block, never repeating the card's own photo.
+const madePics = f => [
+  ['img/extrusion.jpg', 'Линия экструзии плёнки в цехе', 1100, 1366],
+  ['img/rolls.jpg', 'Готовые рулоны плёнки', 1100, 886],
+  ['img/factory.jpg', 'Здание завода ДагПолимер в Каспийске', 1400, 772],
+  ['img/granules.jpg', 'Вторичные гранулы полиэтилена', 1100, 1100],
+].filter(([src]) => src !== f.image).slice(0, 3)
+  .map(([src, alt, w, h]) => `<figure class="disc"><img src="{{r}}${src}" alt="${alt}" width="${w}" height="${h}" loading="lazy"></figure>`).join('\n      ');
 const productBody = f => `<section class="intro product">
   <div class="wrap">
     <h1 class="intro__title product__title" data-rise>${f.h1 || f.name}</h1>
@@ -102,13 +110,11 @@ const productBody = f => `<section class="intro product">
   <div class="wrap made__in">
     <div>
       <h2 id="made-h" data-rise>Делаем сами в Каспийске</h2>
-      <p data-rise>${f.name} выпускается на нашем заводе: от приёмки сырья и экструзии до намотки и отгрузки. Ничего не отдаём на сторону.</p>
+      <p data-rise>${f.made || `${f.name} выпускается на нашем заводе: от приёмки сырья и экструзии до намотки и отгрузки. Ничего не отдаём на сторону.`}</p>
       <p class="section-link" data-rise><a class="more more--light" href="{{link:production}}">Как устроено производство</a></p>
     </div>
     <div class="made__pics" data-rise>
-      <figure class="disc"><img src="{{r}}img/extrusion.jpg" alt="Линия экструзии плёнки в цехе" width="1100" height="1366" loading="lazy"></figure>
-      <figure class="disc"><img src="{{r}}img/rolls.jpg" alt="Готовые рулоны плёнки" width="1100" height="886" loading="lazy"></figure>
-      <figure class="disc"><img src="{{r}}img/factory.jpg" alt="Здание завода ДагПолимер в Каспийске" width="1400" height="772" loading="lazy"></figure>
+      ${madePics(f)}
     </div>
   </div>
 </section>
@@ -190,7 +196,7 @@ ${body.trim()}
     <div class="foot__cols">
       <div>
         <p class="foot__h">Продукция</p>
-        <ul><li><a href="${link('products/stretch')}">Стрейч-плёнка</a></li><li><a href="${link('products/shrink')}">Термоусадочная</a></li><li><a href="${link('products/greenhouse')}">Тепличная и мульча</a></li><li><a href="${link('products')}#more">Гранулы и упаковка</a></li></ul>
+        <ul><li><a href="${link('products/stretch')}">Стрейч-плёнка</a></li><li><a href="${link('products/shrink')}">Термоусадочная</a></li><li><a href="${link('products/greenhouse')}">Тепличная и мульча</a></li><li><a href="${link('products/granules')}">Вторичные гранулы</a></li><li><a href="${link('products/packaging')}">Упаковка под заказ</a></li></ul>
       </div>
       <div>
         <p class="foot__h">Компания</p>
@@ -253,8 +259,6 @@ writeFileSync('llms.txt', `# ДагПолимер
 ## Продукция
 
 ${specs}
-- Вторичные гранулы: ПЭНД, ПЭВД, ПП.
-- Упаковочные решения под заказ: любые размеры, брендирование, малые партии.
 
 ## Страницы
 

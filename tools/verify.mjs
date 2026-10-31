@@ -1,7 +1,8 @@
 // Static checks on every built page: structure, nav, links, assets, motion fallback.
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { dirname, join, normalize } from 'node:path';
-const pages = ['index.html', 'products/index.html', 'production/index.html', 'ecology/index.html', 'about/index.html', 'contacts/index.html', 'products/stretch/index.html', 'products/shrink/index.html', 'products/greenhouse/index.html'];
+import { products } from '../src/products-data.mjs';
+const pages = ['index.html', 'products/index.html', 'production/index.html', 'ecology/index.html', 'about/index.html', 'contacts/index.html', ...products.map(f => `products/${f.id}/index.html`)];
 const css = readFileSync('style.css', 'utf8');
 const errs = [];
 const need = (cond, msg) => cond || errs.push(msg);

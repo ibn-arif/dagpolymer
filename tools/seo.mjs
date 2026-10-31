@@ -1,7 +1,9 @@
 // Checks search/AI signals on every built page and the root files. Pass --published for a PUBLISHED=1 build.
 import { readFileSync, existsSync } from 'node:fs';
+import { products } from '../src/products-data.mjs';
 const published = process.argv.includes('--published');
-const pages = { 'index.html': '', 'products/index.html': 'products/', 'production/index.html': 'production/', 'ecology/index.html': 'ecology/', 'about/index.html': 'about/', 'contacts/index.html': 'contacts/', 'products/stretch/index.html': 'products/stretch/', 'products/shrink/index.html': 'products/shrink/', 'products/greenhouse/index.html': 'products/greenhouse/' };
+const pages = { 'index.html': '', 'products/index.html': 'products/', 'production/index.html': 'production/', 'ecology/index.html': 'ecology/', 'about/index.html': 'about/', 'contacts/index.html': 'contacts/', ...Object.fromEntries(products.map(f => [`products/${f.id}/index.html`, `products/${f.id}/`])) };
+const total = Object.keys(pages).length;
 const SITE = 'https://dagpolymer.com/';
 const errs = [];
 const need = (c, m) => c || errs.push(m);
@@ -14,7 +16,7 @@ for (const [file, path] of Object.entries(pages)) {
   const types = graph.flatMap(n => [].concat(n['@type']));
   need(types.includes('LocalBusiness') && types.includes('Organization'), `${file}: Organization + LocalBusiness`);
   need(types.includes(path ? 'BreadcrumbList' : 'WebSite'), `${file}: ${path ? 'BreadcrumbList' : 'WebSite'}`);
-  if (file === 'products/index.html') need(types.filter(t => t === 'Product').length === 3, `${file}: three Product nodes`);
+  if (file === 'products/index.html') need(types.filter(t => t === 'Product').length === products.length, `${file}: a Product node per product`);
   if (/products\/\w+\//.test(file)) {
     need(types.includes('Product') && types.includes('FAQPage'), `${file}: Product + FAQPage`);
     const bc = graph.find(n => n['@type'] === 'BreadcrumbList');
@@ -34,11 +36,11 @@ for (const [file, path] of Object.entries(pages)) {
   need(!/<h2 class="foot__h"/.test(h), `${file}: footer labels are not h2`);
 }
 const sm = readFileSync('sitemap.xml', 'utf8');
-need((sm.match(/<loc>/g) || []).length === 9 && Object.values(pages).every(p => sm.includes(`<loc>${SITE}${p}</loc>`)), 'sitemap lists all nine URLs');
+need((sm.match(/<loc>/g) || []).length === total && Object.values(pages).every(p => sm.includes(`<loc>${SITE}${p}</loc>`)), `sitemap lists all ${total} URLs`);
 const rb = readFileSync('robots.txt', 'utf8');
 need(/User-agent: GPTBot/.test(rb) && /User-agent: ClaudeBot/.test(rb) && /User-agent: PerplexityBot/.test(rb) && !/Disallow: \/\s*$/m.test(rb) && rb.includes(`Sitemap: ${SITE}sitemap.xml`), 'robots allows AI crawlers and names the sitemap');
 need(existsSync('img/og.jpg'), 'og image exists');
 const ll = readFileSync('llms.txt', 'utf8');
-need(ll.startsWith('# ДагПолимер') && ll.includes('+7 (988) 309-02-02') && (ll.match(/\]\(https:\/\/dagpolymer\.com\//g) || []).length === 9, 'llms.txt has title, contacts and all pages');
+need(ll.startsWith('# ДагПолимер') && ll.includes('+7 (988) 309-02-02') && (ll.match(/\]\(https:\/\/dagpolymer\.com\//g) || []).length === total, 'llms.txt has title, contacts and all pages');
 if (errs.length) { console.log(errs.join('\n')); process.exit(1); }
 console.log(`seo ok (${published ? 'production' : 'staging'})`);

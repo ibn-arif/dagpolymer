@@ -3,7 +3,7 @@
 S=/Users/arip/.claude/skills/design-taste-frontend/scripts
 mkdir -p .taste-skill
 ok=1
-for p in index.html products/index.html production/index.html ecology/index.html about/index.html contacts/index.html products/stretch/index.html products/shrink/index.html products/greenhouse/index.html; do
+for p in index.html products/index.html production/index.html ecology/index.html about/index.html contacts/index.html $(node -e 'import("./src/products-data.mjs").then(m=>console.log(m.products.map(f=>`products/${f.id}/index.html`).join(" ")))'); do
   n=$(echo "$p" | sed 's#/index.html##; s#index.html#home#; s#/#-#g')
   node $S/inspect.mjs "$p" --out ".taste-skill/inspect-$n" > ".taste-skill/inspect-$n.log" 2>&1
   r=$(node tools/nofail.mjs ".taste-skill/inspect-$n.log" 2>&1) || ok=0
