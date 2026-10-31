@@ -29,6 +29,12 @@ Own full cycle on one site in Kaspiysk: raw material → blown-film extrusion �
 - No server: the request form composes an email to dagpolymer@mail.ru (user decision).
 - Language switcher (RU/EN/中文/فارسی/العربية) exists in the Figma design but no translations exist; not built.
 
+## Personal Data (152-ФЗ)
+
+- Operator details live in `src/legal.mjs`; the policy (/privacy/) and the separate consent text (/consent/) are built from them. Name «ООО «ДагПолимер»» is taken from the Google Maps label — confirm it; ИНН and ОГРН are still missing (build prints a note).
+- Forms need the separate, unticked consent checkbox; the letter records when consent was given. No cookies, analytics or third-party requests on page load: the font is self-hosted, the Yandex map loads only on click. Keep it that way (`node tools/pd152.mjs`).
+- Not solvable in code: Roskomnadzor operator notification, an internal order naming the person responsible for personal data, hosting dagpolymer.com in Russia.
+
 ## Brand Commitments
 
 - Name: ДагПолимер. Logo: Figma concept 27 «Нынешний знак в стиле К» (green triangle Д over blue П, atoms and bonds, vertical gradients) — user-pinned.

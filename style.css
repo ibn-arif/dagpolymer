@@ -1,3 +1,7 @@
+/* Onest is served from this site, so visitors' browsers never call Google Fonts. */
+@font-face { font-family: "Onest"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("fonts/onest-cyrillic.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Onest"; font-style: normal; font-weight: 400 700; font-display: swap; src: url("fonts/onest-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
 :root {
   --ground: #f1f4ec;
   --surface: #ffffff;
@@ -206,6 +210,11 @@ html { scrollbar-color: var(--green) var(--tint); }
 .form [aria-invalid="true"] { border-color: #b3261e; }
 .form__err { color: #b3261e; font-size: var(--t-small); }
 .form .btn { margin-top: 20px; }
+.form__consent { display: flex; gap: 12px; align-items: flex-start; margin-top: 14px; font-size: var(--t-small); line-height: 1.45; }
+.form__consent input { flex: none; width: 22px; height: 22px; min-height: 0; margin: 0; padding: 0; accent-color: var(--green); cursor: pointer; }
+.form__consent label { margin: 0; font-weight: 400; }
+.form__consent a, .form__note a { color: var(--green); text-decoration: underline; }
+.form__consent input[aria-invalid="true"] { outline: 2px solid #b3261e; outline-offset: 2px; }
 .form__note { font-size: var(--t-small); color: var(--ink-2); line-height: 1.45; margin-top: 4px; }
 
 /* footer */
@@ -354,7 +363,20 @@ html { scrollbar-color: var(--green) var(--tint); }
 .map h2 { font-size: var(--t-h2); }
 .map__copy p { margin: 20px 0 28px; font-size: var(--t-lead); }
 .map__frame { border-radius: var(--r-card); overflow: hidden; aspect-ratio: 16 / 10; background: var(--tint); }
+.map__frame { display: grid; place-items: center; align-content: center; gap: 14px; text-align: center; padding: 24px; }
+.map__frame.is-loaded { padding: 0; }
 .map__frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+.map__note { font-size: var(--t-small); color: var(--ink-2); max-width: 28em; }
+
+/* legal documents */
+.legal { padding-bottom: var(--gap); }
+.legal__title { font-size: var(--t-h2); }
+.legal__body { max-width: calc(46em + var(--gutter) * 2); margin-left: 0; }
+.legal__body h2 { font-size: var(--t-h3); margin: 48px 0 16px; }
+.legal__body p, .legal__body li { font-size: var(--t-lead); max-width: 46em; }
+.legal__body p + p { margin-top: 12px; }
+.legal__body ul { list-style: disc; padding-left: 1.2em; display: grid; gap: 6px; }
+.legal__body a { color: var(--green); text-decoration: underline; }
 .terms { padding-bottom: var(--gap); }
 .terms h2 { font-size: var(--t-h2); margin-bottom: 48px; }
 .terms__in { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(32px, 4vw, 64px); align-items: start; }

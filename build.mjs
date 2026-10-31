@@ -1,6 +1,7 @@
 // Builds the static pages: shared header/footer + one body per page. Run: node build.mjs
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { products } from './src/products-data.mjs';
+import { operator, privacyBody, consentBody } from './src/legal.mjs';
 
 const pages = [
   { key: 'home', out: 'index.html', title: 'ДагПолимер · плёнка из Каспийска', desc: 'Стрейч, термоусадочная и тепличная плёнка от 17 до 200 микрон. Завод в Каспийске с 2017 года, доставка по югу России.' },
@@ -9,6 +10,8 @@ const pages = [
   { key: 'ecology', out: 'ecology/index.html', title: 'Экология · ДагПолимер', desc: 'Перерабатываем брак и вторсырьё в гранулы и снова пускаем в производство. 3 000+ тонн вторсырья в год.' },
   { key: 'about', out: 'about/index.html', title: 'О компании · ДагПолимер', desc: 'Завод полимерной плёнки в Каспийске с 2017 года. Работаем напрямую, без посредников, возим по всему югу России.' },
   { key: 'contacts', out: 'contacts/index.html', title: 'Контакты · ДагПолимер', desc: 'Адрес завода в Каспийске, телефон отдела продаж, почта и заявка на расчёт стоимости плёнки.' },
+  { key: 'privacy', out: 'privacy/index.html', title: 'Политика обработки персональных данных · ДагПолимер', desc: 'Как ДагПолимер обрабатывает и защищает персональные данные посетителей сайта по 152-ФЗ.', legal: true },
+  { key: 'consent', out: 'consent/index.html', title: 'Согласие на обработку персональных данных · ДагПолимер', desc: 'Текст согласия на обработку персональных данных при отправке заявки на сайте ДагПолимер.', legal: true },
   ...products.map(f => ({ key: 'product-' + f.id, out: `products/${f.id}/index.html`, title: f.title, desc: f.desc, section: 'products', product: f })),
 ];
 // Search and AI visibility. The site lives on github.io until it moves to its own domain:
@@ -140,7 +143,7 @@ for (const p of pages) {
   const r = '../'.repeat(p.out.split('/').length - 1) || './';
   const link = k => (k === 'home' ? r : `${r}${k}/`);
   const navItems = nav.map(([k, label]) => `<li><a href="${link(k)}"${k === (p.section || p.key) ? ' aria-current="page"' : ''}>${label}</a></li>`).join('\n          ');
-  const body = (p.product ? productBody(p.product) : readFileSync(`src/${p.key}.html`, 'utf8')).replaceAll('{{r}}', r).replace(/\{\{link:([\w/]+)\}\}/g, (_, k) => link(k));
+  const body = (p.product ? productBody(p.product) : p.key === 'privacy' ? privacyBody(link) : p.key === 'consent' ? consentBody(link) : readFileSync(`src/${p.key}.html`, 'utf8')).replaceAll('{{r}}', r).replace(/\{\{link:([\w/]+)\}\}/g, (_, k) => link(k));
   const html = `<!doctype html>
 <html lang="ru">
 <head>
@@ -162,9 +165,7 @@ ${PUBLISHED ? `<link rel="canonical" href="${url(p)}">` : '<meta name="robots" c
 <script type="application/ld+json">${jsonld(p)}</script>
 <meta name="theme-color" content="#2d6a3e">
 <link rel="icon" href="${r}img/mark.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<link rel="preload" href="${r}fonts/onest-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${r}style.css">
 <script>document.documentElement.classList.add('js')</script>
 </head>
@@ -208,7 +209,7 @@ ${body.trim()}
       </div>
     </div>
     <p class="foot__name" aria-hidden="true"><img src="${r}img/mark-dark.svg" alt="" width="153" height="84"><span>ДагПолимер</span></p>
-    <p class="foot__legal">© 2026 ДагПолимер. Плёнка из Каспийска с 2017 года.</p>
+    <p class="foot__legal">© 2026 ${operator.name}. Плёнка из Каспийска с 2017 года. <a href="${link('privacy')}">Политика обработки персональных данных</a></p>
   </div>
 </footer>
 
@@ -224,7 +225,7 @@ ${body.trim()}
 const day = new Date().toISOString().slice(0, 10);
 writeFileSync('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map(p => `  <url><loc>${url(p)}</loc><lastmod>${day}</lastmod></url>`).join('\n')}
+${pages.filter(p => !p.legal).map(p => `  <url><loc>${url(p)}</loc><lastmod>${day}</lastmod></url>`).join('\n')}
 </urlset>
 `);
 writeFileSync('robots.txt', `User-agent: *
@@ -262,6 +263,7 @@ ${specs}
 
 ## Страницы
 
-${pages.filter(p => !p.product).map(p => `- [${p.title.split(' · ')[0] === 'ДагПолимер' ? 'Главная' : p.title.split(' · ')[0]}](${url(p)}): ${p.desc}`).join('\n')}
+${pages.filter(p => !p.product && !p.legal).map(p => `- [${p.title.split(' · ')[0] === 'ДагПолимер' ? 'Главная' : p.title.split(' · ')[0]}](${url(p)}): ${p.desc}`).join('\n')}
 `);
 console.log(`built ${pages.length} pages${PUBLISHED ? '' : ' (staging: noindex)'}, sitemap.xml, robots.txt, llms.txt`);
+if (!operator.inn || !operator.ogrn) console.log('note: ИНН/ОГРН оператора не указаны в src/legal.mjs: заполните до запуска на dagpolymer.com');

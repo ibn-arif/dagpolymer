@@ -169,8 +169,13 @@
         </select>
         <label for="f-msg">Объём и детали</label>
         <textarea id="f-msg" name="msg" rows="3" placeholder="Например: стрейч 20 мкм, 2 паллеты"></textarea>
+        <div class="form__consent">
+          <input type="checkbox" id="f-consent" name="consent" required aria-describedby="f-consent-err">
+          <label for="f-consent">Даю <a href="{{link:consent}}" target="_blank">согласие на обработку персональных данных</a></label>
+        </div>
+        <p class="form__err" id="f-consent-err" hidden>Отметьте согласие, без него мы не можем принять заявку.</p>
         <button class="btn btn--wide" type="submit">Отправить заявку</button>
-        <p class="form__note">Откроется ваша почта с готовым письмом. Нажимая кнопку, вы соглашаетесь на обработку персональных данных.</p>
+        <p class="form__note">Откроется ваша почта с готовым письмом. Как мы обрабатываем данные: <a href="{{link:privacy}}" target="_blank">политика обработки персональных данных</a>.</p>
       </form>
     </div>
   </div>

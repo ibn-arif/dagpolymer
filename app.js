@@ -83,17 +83,34 @@ const wanted = new URLSearchParams(location.search).get('film');
 const opt = wanted && film && film.querySelector(`[data-key="${CSS.escape(wanted)}"]`);
 if (opt) film.value = opt.value;
 
+// Contacts map: Yandex is only contacted after the visitor asks for the map.
+const map = $('[data-map]');
+if (map) map.querySelector('.map__load').addEventListener('click', () => {
+  const f = document.createElement('iframe');
+  f.src = map.dataset.map;
+  f.title = 'Карта: завод ДагПолимер в Каспийске';
+  f.allowFullscreen = true;
+  map.replaceChildren(f);
+  map.classList.add('is-loaded');
+});
+
 // Quote form: no server, so it opens the visitor's mail app with the letter written.
 const form = $('#quote');
 if (form) {
   const phone = $('#f-phone');
   const err = $('#f-phone-err');
+  const consent = $('#f-consent');
+  const consentErr = $('#f-consent-err');
   form.addEventListener('submit', e => {
     e.preventDefault();
     const bad = phone.value.replace(/\D/g, '').length < 10;
     phone.setAttribute('aria-invalid', bad);
     err.hidden = !bad;
+    // 152-ФЗ: no request leaves without the separate, unticked-by-default consent.
+    consent.setAttribute('aria-invalid', !consent.checked);
+    consentErr.hidden = consent.checked;
     if (bad) { phone.focus(); return; }
+    if (!consent.checked) { consent.focus(); return; }
     const d = new FormData(form);
     const body = [
       `Имя: ${d.get('name') || '—'}`,
@@ -101,8 +118,13 @@ if (form) {
       `Телефон: ${d.get('phone')}`,
       `Продукция: ${d.get('film')}`,
       `Объём и детали: ${d.get('msg') || '—'}`,
-    ].filter(Boolean).join('\n');
+      '',
+      `Согласие на обработку персональных данных дано на сайте ${location.origin}${location.pathname} ${new Date().toLocaleString('ru-RU')}.`,
+    ].filter(x => x !== false).join('\n');
     location.href = `mailto:dagpolymer@mail.ru?subject=${encodeURIComponent('Заявка на расчёт: ' + d.get('film'))}&body=${encodeURIComponent(body)}`;
+  });
+  consent.addEventListener('change', () => {
+    if (consent.checked) { consent.setAttribute('aria-invalid', 'false'); consentErr.hidden = true; }
   });
   phone.addEventListener('input', () => {
     if (phone.getAttribute('aria-invalid') === 'true' && phone.value.replace(/\D/g, '').length >= 10) {

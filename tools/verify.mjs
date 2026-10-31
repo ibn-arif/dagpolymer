@@ -2,7 +2,7 @@
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { dirname, join, normalize } from 'node:path';
 import { products } from '../src/products-data.mjs';
-const pages = ['index.html', 'products/index.html', 'production/index.html', 'ecology/index.html', 'about/index.html', 'contacts/index.html', ...products.map(f => `products/${f.id}/index.html`)];
+const pages = ['index.html', 'products/index.html', 'production/index.html', 'ecology/index.html', 'about/index.html', 'contacts/index.html', 'privacy/index.html', 'consent/index.html', ...products.map(f => `products/${f.id}/index.html`)];
 const css = readFileSync('style.css', 'utf8');
 const errs = [];
 const need = (cond, msg) => cond || errs.push(msg);
@@ -17,7 +17,7 @@ for (const p of pages) {
   need(html.includes('img/mark.svg'), `${p}: logo mark`);
   const menu = html.split('class="nav__links"')[1]?.split('</ul>')[0] || '';
   need((menu.match(/<a href=/g) || []).length === 5, `${p}: five nav links`);
-  if (p !== 'index.html') need(html.includes('aria-current="page"'), `${p}: current page marked in nav`);
+  if (!/^(index|privacy\/index|consent\/index)\.html$/.test(p)) need(html.includes('aria-current="page"'), `${p}: current page marked in nav`);
   for (const [, href] of html.matchAll(/(?:src|href)="((?!https?:|mailto:|tel:|#)[^"]+)"/g)) {
     const [path, hash] = href.split('#');
     let target = normalize(join(dirname(p), path.split('?')[0]));
