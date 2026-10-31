@@ -41,6 +41,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 img { display: block; max-width: 100%; height: auto; }
+picture { display: contents; } /* the WebP wrapper must not change how photos size inside their frames */
 h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -0.03em; line-height: 1; text-wrap: balance; }
 p { margin: 0; text-wrap: pretty; }
 ul, ol { margin: 0; padding: 0; list-style: none; }

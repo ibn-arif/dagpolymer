@@ -139,24 +139,27 @@ const productBody = f => `<section class="intro product">
   </div>
 </section>`;
 
-// Responsive photos: every img/NAME.jpg gets the img/w/NAME-WIDTH.jpg variants (tools/images.sh) and a sizes hint
-// taken from the figure it sits in, so phones download a 480 px file instead of the 1100 px original.
-const variants = {};
+// Responsive photos: every img/NAME.jpg gets the img/w/NAME-WIDTH.{webp,jpg} variants (tools/images.sh) and a sizes
+// hint taken from the figure it sits in, so phones download a small WebP instead of the 1100 px original JPEG.
+const variants = {}, webp = {};
 for (const f of readdirSync('img/w')) {
-  const [, name, w] = f.match(/^(.+)-(\d+)\.jpg$/) || [];
-  if (name) (variants[name] ||= []).push([+w, f]);
+  const [, name, w, ext] = f.match(/^(.+)-(\d+)\.(jpg|webp)$/) || [];
+  if (name) ((ext === 'jpg' ? variants : webp)[name] ||= []).push([+w, f]);
 }
-Object.values(variants).forEach(v => v.sort((a, b) => a[0] - b[0]));
+[...Object.values(variants), ...Object.values(webp)].forEach(v => v.sort((a, b) => a[0] - b[0]));
 const sizesFor = cls =>
   /hero__small|item__small/.test(cls) ? '(max-width: 880px) 34vw, 220px'
   : /disc--m|disc--s|chain__pic|^disc$/.test(cls) ? '240px'
   : /disc--xl|delivery__pic|aims__pic|terms__pic|equip__pic/.test(cls) ? '(max-width: 880px) 92vw, 620px'
   : '(max-width: 880px) 80vw, 520px';
-const responsive = html => html.replace(/(<figure class="([^"]*)"[^>]*>\s*)?<img ([^>]*?)src="([^"]*?)img\/([\w-]+)\.jpg"/g, (m, fig = '', cls = '', pre, r, name) => {
+const set = (v, r) => v.map(([w, f]) => `${r}img/w/${f} ${w}w`).join(', ');
+const responsive = html => html.replace(/(<figure class="([^"]*)"[^>]*>\s*)?<img ([^>]*?)src="([^"]*?)img\/([\w-]+)\.jpg"([^>]*)>/g, (m, fig = '', cls = '', pre, r, name, post) => {
   const v = variants[name];
   if (!v) return m;
   const mid = (v.find(([w]) => w >= 800) || v[v.length - 1])[1];
-  return `${fig}<img ${pre}src="${r}img/w/${mid}" srcset="${v.map(([w, f]) => `${r}img/w/${f} ${w}w`).join(', ')}" sizes="${sizesFor(cls)}"`;
+  const sizes = sizesFor(cls);
+  const img = `<img ${pre}src="${r}img/w/${mid}" srcset="${set(v, r)}" sizes="${sizes}"${post}>`;
+  return webp[name] ? `${fig}<picture><source type="image/webp" srcset="${set(webp[name], r)}" sizes="${sizes}">${img}</picture>` : fig + img;
 });
 
 for (const p of pages) {
