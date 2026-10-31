@@ -17,6 +17,7 @@ for (const p of pages) {
   need(html.includes('img/mark.svg'), `${p}: logo mark`);
   const menu = html.split('class="nav__links"')[1]?.split('</ul>')[0] || '';
   need((menu.match(/<a href=/g) || []).length === 5, `${p}: five nav links`);
+  for (const [img] of html.matchAll(/<img [^>]*\.jpg[^>]*>/g)) need(/srcset=/.test(img), `${p}: photo without srcset (run tools/images.sh): ${img.slice(0, 80)}`);
   if (!/^(index|privacy\/index|consent\/index)\.html$/.test(p)) need(html.includes('aria-current="page"'), `${p}: current page marked in nav`);
   for (const [, href] of html.matchAll(/(?:src|href)="((?!https?:|mailto:|tel:|#)[^"]+)"/g)) {
     const [path, hash] = href.split('#');

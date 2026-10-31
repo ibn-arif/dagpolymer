@@ -1,5 +1,5 @@
 // Builds the static pages: shared header/footer + one body per page. Run: node build.mjs
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 import { products } from './src/products-data.mjs';
 import { operator, privacyBody, consentBody } from './src/legal.mjs';
 
@@ -139,6 +139,26 @@ const productBody = f => `<section class="intro product">
   </div>
 </section>`;
 
+// Responsive photos: every img/NAME.jpg gets the img/w/NAME-WIDTH.jpg variants (tools/images.sh) and a sizes hint
+// taken from the figure it sits in, so phones download a 480 px file instead of the 1100 px original.
+const variants = {};
+for (const f of readdirSync('img/w')) {
+  const [, name, w] = f.match(/^(.+)-(\d+)\.jpg$/) || [];
+  if (name) (variants[name] ||= []).push([+w, f]);
+}
+Object.values(variants).forEach(v => v.sort((a, b) => a[0] - b[0]));
+const sizesFor = cls =>
+  /hero__small|item__small/.test(cls) ? '(max-width: 880px) 34vw, 220px'
+  : /disc--m|disc--s|chain__pic|^disc$/.test(cls) ? '240px'
+  : /disc--xl|delivery__pic|aims__pic|terms__pic|equip__pic/.test(cls) ? '(max-width: 880px) 92vw, 620px'
+  : '(max-width: 880px) 80vw, 520px';
+const responsive = html => html.replace(/(<figure class="([^"]*)"[^>]*>\s*)?<img ([^>]*?)src="([^"]*?)img\/([\w-]+)\.jpg"/g, (m, fig = '', cls = '', pre, r, name) => {
+  const v = variants[name];
+  if (!v) return m;
+  const mid = (v.find(([w]) => w >= 800) || v[v.length - 1])[1];
+  return `${fig}<img ${pre}src="${r}img/w/${mid}" srcset="${v.map(([w, f]) => `${r}img/w/${f} ${w}w`).join(', ')}" sizes="${sizesFor(cls)}"`;
+});
+
 for (const p of pages) {
   const r = '../'.repeat(p.out.split('/').length - 1) || './';
   const link = k => (k === 'home' ? r : `${r}${k}/`);
@@ -218,7 +238,7 @@ ${body.trim()}
 </html>
 `;
   mkdirSync(p.out.split('/').slice(0, -1).join('/') || '.', { recursive: true });
-  writeFileSync(p.out, html);
+  writeFileSync(p.out, responsive(html));
 }
 
 // Files for the site root on the production domain.
